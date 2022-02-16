@@ -1,0 +1,7 @@
+name: base
+channels:
+  - terradue
+  - conda-forge
+dependencies:
+  - python
+  - pip

@@ -1,0 +1,12 @@
+{{- if .Values.s3.enabled -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: aws-credentials
+  namespace: {{ .Release.Namespace }}
+data:
+  aws-credentials: |+
+    [default]
+    aws_access_key_id = {{ .Values.s3.access_key_id }}
+    aws_secret_access_key = {{ .Values.s3.secret_access_key }}
+{{- end }}

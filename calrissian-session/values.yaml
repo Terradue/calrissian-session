@@ -1,0 +1,75 @@
+# Default values for calrissian-session.
+# This is a YAML-formatted file.
+
+# number of pods 
+replicaCount: 1
+
+# container image for running the pod
+image:
+  repository: docker.terradue.com/calrissian-session
+  pullPolicy: IfNotPresent
+  tag: "0.12"
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  name: "calrissian-sa"
+
+# optional pod annotations
+podAnnotations: {}
+
+# additional settings for the pod security context
+podSecurityContext: {}
+
+# running with privileged set to true allows running podman in the pod
+securityContext: 
+  privileged: true
+
+service:
+  type: ClusterIP
+  port: 80
+
+# specify the resources for the pod
+resources: {}
+
+# specify the node selector
+nodeSelector: {}
+
+# tolerations
+tolerations: []
+
+# node affinity
+affinity: {}
+
+# ReadWriteMany storage class to use
+storageClass: longhorn
+
+# size of the ReadWriteMany volumes 
+persistence:
+  input: 10Gi
+  tmp: 10Gi
+  output: 10Gi
+
+# use s3, if true, configMaps are mounted to access the S3 bucket
+s3:
+  enabled: true
+  access_key_id: <access_key_id>
+  secret_access_key: <secret_access_key>
+  region: <s3 region>
+  endpoint_url: <s3 service URL>
+  signature_version: s3v4
+
+# enable the configuration of the docker config file on the pod (support for podman pull)
+containerRegistry:
+  enabled: true
+
+# container registries credentials
+imageCredentials:
+    # registry is the container registry
+  - registry: https://index.docker.io/v1/
+    # auth is the base64 auth string (see your ~/.docker/config.json file)
+    auth: "aaa....bbbb"

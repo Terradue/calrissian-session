@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "calrissian-session.fullname" . }}
+  labels:
+    {{- include "calrissian-session.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "calrissian-session.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "calrissian-session.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: container-rg-config
+      serviceAccountName: {{ template "serviceaccount_name" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sleep"]
+          args: ["604800"]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath: /calrissian-input
+            name: calrissian-input-data
+          - mountPath: /calrissian-tmp
+            name: calrissian-tmpout
+          - mountPath: /calrissian-output
+            name: calrissian-output-data
+          {{- if .Values.s3.enabled }}
+          - name: aws-config
+            mountPath: /home/.aws/config
+            subPath: aws-config
+          - name: aws-credentials
+            mountPath: /home/.aws/credentials
+            subPath: aws-credentials
+          {{- end }}  
+          {{- if .Values.containerRegistry.enabled }}
+          - name: container-registry
+            mountPath: /home/.docker/config.json
+            subPath: container-registry
+          {{- end }}
+          env:
+          - name: CALRISSIAN_POD_NAME
+            valueFrom: {fieldRef: {fieldPath: metadata.name}}
+          {{- if .Values.s3.enabled }}
+          - name: S3_REGION
+            value: {{ .Values.s3.region }}
+          - name: S3_SERVICE_URL
+            value: {{ .Values.s3.endpoint_url }}
+          - name: S3_SECRET_KEY
+            value: {{ .Values.s3.secret_access_key }}
+          - name: S3_ACCESS_KEY
+            value: {{ .Values.s3.access_key_id }}
+          {{- end }}
+      volumes:
+      - name: calrissian-input-data
+        persistentVolumeClaim:
+          claimName: calrissian-input-data
+          readOnly: false
+      - name: calrissian-tmpout
+        persistentVolumeClaim:
+          claimName: calrissian-tmpout
+          readOnly: false
+      - name: calrissian-output-data
+        persistentVolumeClaim:
+          claimName: calrissian-output-data
+          readOnly: false
+      {{- if .Values.s3.enabled }}
+      - name: aws-config
+        configMap:
+          name: aws-config
+      - name: aws-credentials
+        configMap:
+          name: aws-credentials
+      {{- end }}
+      {{- if .Values.containerRegistry.enabled }}
+      - name: container-registry
+        configMap:
+          name: container-registry
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
