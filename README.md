@@ -250,7 +250,7 @@ INFO Final process status is success
 
 ```console
 export NAMESPACE_NAME=calrissian-session
-helm uninstall calrissian-session --namespace "$NAMESPACE_NAME" 
+helm uninstall my-calrissian-session --namespace "$NAMESPACE_NAME" 
 ```
 
 ### Uninstall longhorn:
