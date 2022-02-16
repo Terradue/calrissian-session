@@ -1,9 +1,0 @@
-{{- if .Values.s3.enabled -}}
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: aws-config
-  namespace: {{ .Release.Namespace }}
-data:
-  aws-config: "[plugins]\nendpoint = awscli_plugin_endpoint\n\n[default]\nregion = {{ .Values.s3.region }}\ns3 = \n\tendpoint_url = {{ .Values.s3.endpoint_url }}\n\taddressing_style = path\n\tsignature_version =  {{ .Values.s3.signature_version }}\n\tmax_concurrent_requests = 100\n\tmax_queue_size = 1000\n\tmultipart_threshold = 50MB\n\tmultipart_chunksize = 10MB\ns3api = \n"
-{{- end }}
