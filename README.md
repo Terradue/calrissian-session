@@ -71,10 +71,16 @@ kubectl create namespace "$NAMESPACE_NAME"
 
 ## Install or upgrade a calrissian session
 
+Add the helm repo with:
+
+```
+helm repo add calrissian-session https://terradue.github.io/calrissian-session
+```
+
 Deploy the calrissian session with:
 
 ```
-helm upgrade --install calrissian-session calrissian-session --namespace "$NAMESPACE_NAME" --create-namespace \
+helm upgrade --install my-calrissian-session calrissian-session/calrissian-session --namespace "$NAMESPACE_NAME" --create-namespace \
     --set imageCredentials[0].registry=docker.terradue.com \
     --set imageCredentials[0].auth="aaa....bbbb" \
     --set s3.enabled=true \
@@ -83,7 +89,6 @@ helm upgrade --install calrissian-session calrissian-session --namespace "$NAMES
     --set s3.region=a_region \
     --set s3.endpoint_url=https://s3.somedomain.com \
     --set s3.signature_version=s3v4
-
 ```
 
 Or update the `values.yaml` file and then:
