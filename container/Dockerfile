@@ -49,9 +49,8 @@ RUN curl -s -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/releas
 
 RUN echo "alias ll='ls -l'" >> /home/.bashrc
 
-RUN git clone https://github.com/Terradue/calrissian.git            && \
+RUN git clone --branch 0.12.0 https://github.com/Duke-GCB/calrissian.git            && \
     cd calrissian                                                   && \
-    git checkout feature/sprint1                                    && \
     /opt/micromamba/base/bin/python setup.py install                && \
     rm -fr /home/calrissian
 
