@@ -75,6 +75,7 @@ Add the helm repo with:
 
 ```
 helm repo add calrissian-session https://terradue.github.io/calrissian-session
+helm repo update
 ```
 
 Deploy the calrissian session with:
