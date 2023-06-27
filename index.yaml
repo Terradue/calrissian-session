@@ -3,6 +3,16 @@ entries:
   calrissian-session:
   - apiVersion: v2
     appVersion: 1.17.2
+    created: "2023-06-27T15:32:38.562958741Z"
+    description: A Helm chart for Kubernetes
+    digest: 0786c93c4b857a71fbd7377f0945b68bcfc37bf17f3f1b827a774debd379a53b
+    name: calrissian-session
+    type: application
+    urls:
+    - https://github.com/Terradue/calrissian-session/releases/download/calrissian-session-0.1.8/calrissian-session-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 1.17.2
     created: "2023-06-27T15:04:47.724949864Z"
     description: A Helm chart for Kubernetes
     digest: 8e2e4f71671683d17da4e3a9cf077803ae83609dca67725b83f71cdb67a62e58
