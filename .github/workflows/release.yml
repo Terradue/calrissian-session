@@ -38,5 +38,5 @@ jobs:
           path: ./
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-          repository: terradue/calrissian-session
+          repository: terradue/calrissian-session:0.1
           tag_with_ref: true
