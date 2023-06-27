@@ -36,6 +36,7 @@ spec:
           volumeMounts:
           - mountPath: /calrissian
             name: calrissian-volume
+            readOnly: false
           {{- if .Values.s3.enabled }}
           - name: aws-config
             mountPath: /home/.aws/config
