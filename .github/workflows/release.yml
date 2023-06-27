@@ -38,5 +38,5 @@ jobs:
           path: ./
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: eoepca/pde-code-server
+          repository: terradue/calrissian-session
           tag_with_ref: true
