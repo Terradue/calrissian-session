@@ -17,8 +17,10 @@ RUN \
     echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
+RUN usermod -u 1001 -g 100 mambauser
+
 RUN \
-    chown -R mambauser:1000 /opt/conda/
+    chown -R mambauser:100 /opt/conda/
 
 RUN \
     echo "**** install Stars ****" && \
