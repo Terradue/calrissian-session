@@ -6,7 +6,7 @@ replicaCount: 1
 
 # container image for running the pod
 image:
-  repository: docker.io/terradue/calrissian-session
+  repository: terradue/calrissian-session:develop
   pullPolicy: IfNotPresent
   tag: latest
 
