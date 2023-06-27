@@ -46,17 +46,15 @@ tolerations: []
 affinity: {}
 
 # ReadWriteMany storage class to use
-storageClass: longhorn
+storageClass: openebs-kernel-nfs-scw
 
 # size of the ReadWriteMany volumes 
 persistence:
-  input: 10Gi
-  tmp: 10Gi
-  output: 10Gi
+  calrissian: 10Gi
 
 # use s3, if true, configMaps are mounted to access the S3 bucket
 s3:
-  enabled: true
+  enabled: false
   access_key_id: <access_key_id>
   secret_access_key: <secret_access_key>
   region: <s3 region>
@@ -72,4 +70,4 @@ imageCredentials:
     # registry is the container registry
   - registry: https://index.docker.io/v1/
     # auth is the base64 auth string (see your ~/.docker/config.json file)
-    auth: "aaa....bbbb"
+    auth: ""
