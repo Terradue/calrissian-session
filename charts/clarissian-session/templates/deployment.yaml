@@ -34,12 +34,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - mountPath: /calrissian-input
-            name: calrissian-input-data
-          - mountPath: /calrissian-tmp
-            name: calrissian-tmpout
-          - mountPath: /calrissian-output
-            name: calrissian-output-data
+          - mountPath: /calrissian
+            name: calrissian-volume
           {{- if .Values.s3.enabled }}
           - name: aws-config
             mountPath: /home/.aws/config
@@ -57,27 +53,21 @@ spec:
           - name: CALRISSIAN_POD_NAME
             valueFrom: {fieldRef: {fieldPath: metadata.name}}
           {{- if .Values.s3.enabled }}
-          - name: S3_REGION
+          - name: AWS_DEFAULT_REGION
+            value: {{ .Values.s3.region }}
+          - name: AWS_REGION
             value: {{ .Values.s3.region }}
           - name: S3_SERVICE_URL
             value: {{ .Values.s3.endpoint_url }}
-          - name: S3_SECRET_KEY
+          - name: AWS_SECRET_ACCESS_KEY
             value: {{ .Values.s3.secret_access_key }}
-          - name: S3_ACCESS_KEY
+          - name: AWS_ACCESS_KEY_ID
             value: {{ .Values.s3.access_key_id }}
           {{- end }}
       volumes:
-      - name: calrissian-input-data
+      - name: calrissian-volume
         persistentVolumeClaim:
-          claimName: calrissian-input-data
-          readOnly: false
-      - name: calrissian-tmpout
-        persistentVolumeClaim:
-          claimName: calrissian-tmpout
-          readOnly: false
-      - name: calrissian-output-data
-        persistentVolumeClaim:
-          claimName: calrissian-output-data
+          claimName: calrissian-volume
           readOnly: false
       {{- if .Values.s3.enabled }}
       - name: aws-config

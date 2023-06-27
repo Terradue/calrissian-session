@@ -1,7 +1,0 @@
-name: base
-channels:
-  - terradue
-  - conda-forge
-dependencies:
-  - python=3.9
-  - pip

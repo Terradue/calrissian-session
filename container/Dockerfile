@@ -1,61 +1,42 @@
-FROM quay.io/podman/stable:latest
+FROM mambaorg/micromamba:1.4-jammy
 
 USER root
 
-ADD install-yum.bash /tmp/install-yum.bash
-ADD yum.list /tmp/yum.list
-RUN set -x && chmod 755 /tmp/install-yum.bash && \
-	/tmp/install-yum.bash && \
-	rm -f  /tmp/yum.list /tmp/install-yum.bash
+ENV USERNAME=mambauser
 
-ENV SHELL=bash \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    HOME=/home/${NB_USER} \
-    PATH=/opt/micromamba/base/bin:$PATH \
-    MAMBA_ROOT_PREFIX=/opt/micromamba/base
+ENV PATH=/opt/conda/bin/:$PATH
 
+RUN \
+    apt-get update -y \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl sudo git nodejs wget curl git-flow vim psutils procps podman zip
 
-ADD environment.yml /tmp/environment.yml
+RUN \
+    echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
-RUN  wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1 && \
-    mv micromamba /usr/bin/micromamba && \
-    micromamba shell init -s bash -p ~/micromamba
+RUN \
+    chown -R mambauser:1000 /opt/conda/
 
-RUN micromamba create -f /tmp/environment.yml && \
-    rm -f /tmp/environment.yml 
-    
+RUN \
+    echo "**** install Stars ****" && \
+    stars_version=2.10.17 && \
+    curl -L https://github.com/Terradue/Stars/releases/download/${stars_version}/Stars.${stars_version}.linux-x64.deb > Stars.deb && \
+    echo "deb http://security.ubuntu.com/ubuntu focal-security main" | tee /etc/apt/sources.list.d/focal-security.list && \
+    apt-get update && \
+    apt-get install libssl1.1 && \
+    dpkg -i Stars.deb && \
+    rm Stars.deb
 
-WORKDIR ${HOME}
+USER mambauser
 
-RUN ln -s /usr/bin/podman /usr/bin/docker # required by cwltool docker pull even if running with --podman
+RUN micromamba install -c conda-forge -n base python=3.7 pip
 
+WORKDIR /home/mambauser
+RUN \
+    echo "**** install calrissian ****" && \
+    /opt/conda/bin/pip install calrissian
 
-# yq, jq, aws cli
-RUN VERSION="v4.12.2"                                                                               && \
-    BINARY="yq_linux_amd64"                                                                         && \
-    wget --quiet https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
-    tar xz && mv ${BINARY} /usr/bin/yq                                                              && \
-    curl -s -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > /usr/bin/jq     && \
-    chmod +x /usr/bin/jq                                                                            && \
-    /opt/micromamba/base/bin/pip3 install awscli                                                           && \
-    /opt/micromamba/base/bin/pip3 install awscli-plugin-endpoint
-
-# kubectl
-RUN curl -s -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"  && \
-    chmod +x kubectl                                                                                                    && \
-    mv ./kubectl /usr/bin/kubectl
-
-RUN echo "alias ll='ls -l'" >> /home/.bashrc
-
-RUN git clone --branch 0.12.0 https://github.com/Duke-GCB/calrissian.git            && \
-    cd calrissian                                                   && \
-    /opt/micromamba/base/bin/python setup.py install                && \
-    rm -fr /home/calrissian
-
-RUN echo "PS1='[\u@\h \W] $ '" >> /home/.bashrc                     && \
-    echo "micromamba activate" >> /home/.bashrc
-
-ENV PATH=/opt/micromamba/base/bin:$PATH
-
+ENTRYPOINT []

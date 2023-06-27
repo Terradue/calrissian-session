@@ -2,25 +2,24 @@
 
 Calrissian is a CWL implementation designed to run inside a Kubernetes cluster. Its goal is to be highly efficient and scalable, taking advantage of high capacity clusters to run many steps in parallel.  
 
-Calrissian requires a Kubernetes, configured to provision PersistentVolumes with the ReadWriteMany access mode. Kubernetes installers and cloud providers don't usually include this type of storage, so this Helm chart provides a deployment using Longhorn.
+Calrissian requires a Kubernetes cluster, configured to provision PersistentVolumes with the `ReadWriteMany` access mode. 
 
 This Helm chart deploys and configures:
 
-- three ReadWriteMany `PersistentVolumeClaim`s
+- a ReadWriteMany `PersistentVolumeClaim`
 - `configMap`s setting:
     - the access to an S3 bucket 
     - the access to container registries
 - `Role`s to create pods and access pod logs
 - `RoleBinding`s to associate the roles to the namespace default service account
-- a `Deployment` with a pod that can be attached to a Visual Studio Code session
+- a `Deployment` with a pod that includes `calrissian` and typical development tools (the pod can be attached to a Visual Studio Code session)
 - an optional `ServiceAccount` 
-- a `Secret` to pull containers from private registries
+- a `Secret` to pull containers from container registries
 
 ## Requirements
 
 - a kubeconfig file to access a kubernetes cluster
-- an environment variable exporting that config file
-- longhorn installed on the cluster
+- an environment variable named `KUBECONFIG` exporting that config file
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) and [helm](https://helm.sh/docs/intro/install/) installed
 
 ### Setting the KUBECONFIG environment variable
@@ -28,34 +27,10 @@ This Helm chart deploys and configures:
 Example: 
 
 ```console
-export KUBECONFIG=~/Downloads/kubeconfig-k8s-bold-nightingale.yaml
-```
-
-### Longhorn (if not installed on the cluster)
-
-To verify if longhorn is installed, list the pod in the `longhorn-system` namespace: 
-
-```
-kubectl -n longhorn-system get pod
-```
-
-If you get `No resources found in longhorn-system namespace.` follow the steps below to install longhorn.
-
-Add and update the longhorn Helm chart with:
-
-```
-helm repo add longhorn https://charts.longhorn.io
-helm repo update
-```
-
-Install longhorn with:
-
-```
-helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --set longhorn.persistence.defaultClassReplicaCount=1
+export KUBECONFIG=~/Downloads/kubeconfig.yaml
 ```
 
 ### A kubernetes namespace for the Calrissian session
-
 
 Export an environment variable exporting the namespace for the Calrissian session, e.g.:
 
@@ -104,7 +79,7 @@ helm upgrade --install calrissian-session calrissian-session --namespace "$NAMES
 
 ```
 rm -f ~/.kube/config
-ln -s ~/Downloads/kubeconfig-k8s-bold-nightingale.yaml ~/.kube/config
+ln -s ~/Downloads/kubeconfig.yaml ~/.kube/config
 ```
 
 **Visual Studio requirements** 
@@ -141,13 +116,13 @@ Go to the "Explorer" and select "Clone Repository"
 2. Run the application with: 
 
 ```console
-calrissian --stdout /calrissian-output/results.json \
-           --stderr  /calrissian-output/app.log \
+calrissian --stdout /calrissian/results.json \
+           --stderr  /calrissian/app.log \
            --max-ram 16G \
            --max-cores "8" \
-           --tmp-outdir-prefix /calrissian-tmp/ \
-           --outdir /calrissian-output/ \
-           --usage-report /calrissian-output/usage.json \
+           --tmp-outdir-prefix /calrissian/tmp \
+           --outdir /calrissian/ \
+           --usage-report /calrissian/usage.json \
            app-package.cwl#dnbr \
            params.yaml
 ```
@@ -253,12 +228,3 @@ INFO Final process status is success
 export NAMESPACE_NAME=calrissian-session
 helm uninstall my-calrissian-session --namespace "$NAMESPACE_NAME" 
 ```
-
-### Uninstall longhorn:
-
-To uninstall longhorn do:
-
-```
-helm uninstall longhorn -n longhorn-system
-```
-
