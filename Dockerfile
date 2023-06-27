@@ -11,7 +11,7 @@ RUN \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
-        curl sudo git nodejs wget curl git-flow vim psutils procps podman zip unzip
+        curl sudo git nodejs wget curl git-flow vim psutils procps podman zip unzip uidmap slirp4netns
 
 RUN \
     echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
