@@ -32,6 +32,14 @@ RUN \
     dpkg -i Stars.deb && \
     rm Stars.deb
 
+
+RUN \
+    ln -s /usr/bin/podman /usr/bin/docker
+
+RUN \
+    mkdir /workspace && \
+    chown -R mambauser:100 /workspace
+
 USER mambauser
 
 RUN micromamba install -c conda-forge -n base python=3.7 pip
@@ -40,5 +48,6 @@ WORKDIR /home/mambauser
 RUN \
     echo "**** install calrissian ****" && \
     /opt/conda/bin/pip install calrissian
+
 
 ENTRYPOINT []

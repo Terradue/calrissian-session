@@ -29,6 +29,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "cp -r /home/.aws /workspace/.aws && cp -r /home/.docker /workspace/.podman && chown -R mambauser:100 /workspace/.podman" ]
           command: ["sleep"]
           args: ["604800"]
           resources:
@@ -53,6 +57,8 @@ spec:
           env:
           - name: CALRISSIAN_POD_NAME
             valueFrom: {fieldRef: {fieldPath: metadata.name}}
+          - name: XDG_RUNTIME_DIR
+            value: /workspace/.podman
           {{- if .Values.s3.enabled }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.s3.region }}

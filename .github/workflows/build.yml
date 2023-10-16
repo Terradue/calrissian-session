@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  container-crop:
+  container-build:
     
     runs-on: ubuntu-latest
 
