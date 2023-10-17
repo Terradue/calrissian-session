@@ -91,7 +91,7 @@ helm upgrade --install my-calrissian-session calrissian-session/calrissian-sessi
     --set s3.signature_version=s3v4
 ```
 
-Or update the `values.yaml` file and then:
+Or create a `values.yaml` file and then:
 
 ```console
 helm upgrade --install calrissian-session calrissian-session --namespace "$NAMESPACE_NAME" --values calrissian-session/values.yaml
