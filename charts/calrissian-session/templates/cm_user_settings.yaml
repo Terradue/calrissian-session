@@ -1,0 +1,24 @@
+{{- if .Values.s3.enabled -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: user-settings
+  namespace: {{ .Release.Namespace }}
+data:
+  user-settings: |
+    {
+        "S3": {
+            "Services": {
+                "iride": {
+                    "UrlPattern":  {{ .Values.s3.bucket_pattern }},
+                    "Region":  {{ .Values.s3.region }},
+                    "AuthenticationRegion":  {{ .Values.s3.region }},
+                    "AccessKey": {{ .Values.s3.access_key_id }},
+                    "SecretKey": {{ .Values.s3.secret_access_key }},
+                    "ServiceURL": {{ .Values.s3.endpoint_url }},
+                    "ForcePathStyle": true
+                }
+            }
+        }
+    }
+{{- end}}

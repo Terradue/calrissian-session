@@ -58,6 +58,9 @@ spec:
           - name: aws-credentials
             mountPath: /home/.aws/credentials
             subPath: aws-credentials
+          - name: user-settings
+            mountPath: /etc/Stars/appsettings.json
+            subPath: user-settings
           {{- end }}  
           {{- if .Values.containerRegistry.enabled }}
           - name: container-registry
@@ -96,6 +99,9 @@ spec:
       - name: aws-credentials
         configMap:
           name: aws-credentials
+      - name: user-settings
+        configMap:
+          name: user-settings
       {{- end }}
       {{- if .Values.containerRegistry.enabled }}
       - name: container-registry
