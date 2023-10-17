@@ -42,7 +42,7 @@ RUN \
 
 USER mambauser
 
-RUN micromamba install -c conda-forge -n base python=3.7 pip
+RUN micromamba install -c conda-forge -n base python=3.7 pip nose2
 
 WORKDIR /home/mambauser
 RUN \
