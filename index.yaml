@@ -3,6 +3,16 @@ entries:
   calrissian-session:
   - apiVersion: v2
     appVersion: 1.17.2
+    created: "2023-10-17T12:45:13.857923241Z"
+    description: A Helm chart for running CWL workflows on Kubernetes
+    digest: da908b88db8542a8560853e1a765c48542fe7ee96f9327cd9d32d78a8f475a48
+    name: calrissian-session
+    type: application
+    urls:
+    - https://github.com/Terradue/calrissian-session/releases/download/calrissian-session-0.1.13/calrissian-session-0.1.13.tgz
+    version: 0.1.13
+  - apiVersion: v2
+    appVersion: 1.17.2
     created: "2023-10-17T10:23:31.383256933Z"
     description: A Helm chart for running CWL workflows on Kubernetes
     digest: 7908c8c04272a7450149d977d853b5955cf1aaa454734214b9673272ab0da8ed
