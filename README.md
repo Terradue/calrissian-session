@@ -16,6 +16,30 @@ This Helm chart deploys and configures:
 - an optional `ServiceAccount` 
 - a `Secret` to pull containers from container registries
 
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| affinity | object | `{}` | node affinity |
+| image | object | `{"pullPolicy":"Always","repository":"ghcr.io/terradue/calrissian-session/calrissian-session","tag":"latest"}` | Calrissian container image for running the Calrissian pod |
+| imageCredentials | list | `[{"auth":"bXNhZ2....RVURt","registry":"ghcr.io"},{"auth":"ZmFi...mlRTldqZw==","https://index.docker.io/v1/":null}]` | container registries credentials |
+| imageCredentials[0] | object | `{"auth":"bXNhZ2....RVURt","registry":"ghcr.io"}` | registry is the container registry |
+| imageCredentials[0].auth | string | `"bXNhZ2....RVURt"` | auth is the base64 auth string (see your ~/.docker/config.json file) |
+| nodeSelector | object | `{"k8s.scaleway.com/pool-name":"processing-node-pool-iride-xl"}` | specify the node selector for the Calrissian pod and the Calrissian worker pods |
+| podAnnotations | object | `{}` | optional pod annotations |
+| podSecurityContext | object | `{}` | additional settings for the pod security context |
+| replicaCount | int | `1` | number of pods, one is usually enough |
+| resources | object | `{"limits":{"cpu":"4","memory":"12Gi"},"requests":{"cpu":"4","memory":"8Gi"}}` | specify the resources for the Calrissian pod |
+| s3 | object | `{"access_key_id":"SC...8Z","bucket_pattern":"s3:\\/\\/ir....tplace\\/.*","enabled":true,"endpoint_url":"https://s3.....cloud","region":"...","secret_access_key":"bf...dc6","signature_version":"s3v4"}` | use s3, if true, configMaps are mounted to access the S3 bucket |
+| securityContext | object | `{"privileged":true}` | running with privileged set to true allows running podman in the Calrissian pod |
+| serviceAccount | object | `{"annotations":{},"create":true,"name":"calrissian-sa"}` | Service account to use |
+| serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| serviceAccount.name | string | `"calrissian-sa"` | The name of the service account to use. |
+| storageClass | string | `"openebs-kernel-nfs-scw"` | ReadWriteMany storage class for Calrissian worker  |
+| tolerations | list | `[]` | tolerations |
+| volumeSize | string | `"10Gi"` | size of the ReadWriteMany volume for Calrissian executions |
+
 ## Requirements
 
 - a kubeconfig file to access a kubernetes cluster

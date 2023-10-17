@@ -39,7 +39,11 @@ spec:
           lifecycle:
             postStart:
               exec:
+                {{- if .Values.s3.enabled }}
+                command: ["/bin/sh", "-c", "cp -r /home/.docker /workspace/.podman && cp -r /home/.aws /workspace/.aws && chown -R mambauser:100 /workspace/.podman && chown -R mambauser:100 /calrissian" ]  
+                {{ else }}
                 command: ["/bin/sh", "-c", "cp -r /home/.docker /workspace/.podman && chown -R mambauser:100 /workspace/.podman && chown -R mambauser:100 /calrissian" ]
+                {{ end }}
           command: ["sleep"]
           args: ["604800"]
           resources:
@@ -62,11 +66,9 @@ spec:
             mountPath: /etc/Stars/appsettings.json
             subPath: user-settings
           {{- end }}  
-          {{- if .Values.containerRegistry.enabled }}
           - name: container-registry
             mountPath: /home/.docker/config.json
             subPath: container-registry
-          {{- end }}
           env:
           - name: CALRISSIAN_POD_NAME
             valueFrom: {fieldRef: {fieldPath: metadata.name}}
@@ -103,11 +105,9 @@ spec:
         configMap:
           name: user-settings
       {{- end }}
-      {{- if .Values.containerRegistry.enabled }}
       - name: container-registry
         configMap:
           name: container-registry
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

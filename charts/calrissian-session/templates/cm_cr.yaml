@@ -1,4 +1,3 @@
-{{- if .Values.containerRegistry.enabled -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -7,4 +6,3 @@ metadata:
 data:
   container-registry: |
 {{- include "dockerconfigjson.b64dec" . | nindent 6 }}
-{{- end }}
