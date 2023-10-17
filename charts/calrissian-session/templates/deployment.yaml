@@ -74,6 +74,8 @@ spec:
             valueFrom: {fieldRef: {fieldPath: metadata.name}}
           - name: XDG_RUNTIME_DIR
             value: /workspace/.podman
+          - name: HOME
+            value: /workspace
           {{- if .Values.s3.enabled }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.s3.region }}
