@@ -32,6 +32,12 @@ RUN \
     dpkg -i Stars.deb && \
     rm Stars.deb
 
+RUN \
+    echo "**** install yq, aws cli ****" && \
+    VERSION="v4.12.2"                                                                               && \
+    BINARY="yq_linux_amd64"                                                                         && \
+    wget --quiet https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
+    tar xz && mv ${BINARY} /usr/bin/yq 
 
 RUN \
     ln -s /usr/bin/podman /usr/bin/docker
@@ -44,10 +50,14 @@ USER mambauser
 
 RUN micromamba install -c conda-forge -n base python=3.7 pip nose2
 
+RUN \
+    /opt/conda/bin/pip3 install awscli                                                            && \
+    /opt/conda/bin/pip3 install awscli-plugin-endpoint                                              
+
 WORKDIR /home/mambauser
 RUN \
     echo "**** install calrissian ****" && \
-    /opt/conda/bin/pip install calrissian
+    /opt/conda/bin/pip3 install calrissian
 
 
 ENTRYPOINT []
