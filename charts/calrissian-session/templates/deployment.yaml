@@ -29,10 +29,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "cp -r /home/.aws /workspace/.aws && cp -r /home/.docker /workspace/.podman && chown -R mambauser:100 /workspace/.podman" ]
+                command: ["/bin/sh", "-c", "cp -r /home/.docker /workspace/.podman && chown -R mambauser:100 /workspace/.podman && chown -R mambauser:100 /calrissian" ]
           command: ["sleep"]
           args: ["604800"]
           resources:
@@ -41,6 +48,9 @@ spec:
           - mountPath: /calrissian
             name: calrissian-volume
             readOnly: false
+          - mountPath: /workspace/node-selector.yaml
+            name: node-selector
+            subPath: node-selector
           {{- if .Values.s3.enabled }}
           - name: aws-config
             mountPath: /home/.aws/config
@@ -76,6 +86,9 @@ spec:
         persistentVolumeClaim:
           claimName: calrissian-volume
           readOnly: false
+      - name: node-selector
+        configMap:
+          name: node-selector
       {{- if .Values.s3.enabled }}
       - name: aws-config
         configMap:

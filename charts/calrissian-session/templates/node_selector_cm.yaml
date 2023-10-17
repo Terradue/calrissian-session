@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: node-selector
+  namespace: {{ .Release.Namespace }}
+data:
+  node-selector: |+
+    {{- .Values.nodeSelector | toYaml | nindent 4 }}
