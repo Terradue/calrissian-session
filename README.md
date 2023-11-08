@@ -145,7 +145,7 @@ calrissian --stdout /calrissian/results.json \
            --max-ram 16G \
            --max-cores "8" \
            --tmp-outdir-prefix /calrissian/tmp \
-           --outdir /calrissian/ \
+           --outdir /calrissian/output \
            --usage-report /calrissian/usage.json \
            app-package.cwl#dnbr \
            params.yaml
